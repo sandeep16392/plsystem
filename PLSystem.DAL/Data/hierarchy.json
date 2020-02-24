@@ -1,0 +1,42 @@
+[
+{
+	"DEPT_L3_NODE_M":"GM",
+	"DEPT_L4_NODE_M":"COM",
+	"DEPT_L5_NODE_M":"AGG",
+	"DEPT_L6_NODE_M":"Desk1",
+	"DEPT_L7_NODE_M":"Commodities Funding",
+	"DEPT_LEAF_NODE":"10000"
+},
+{
+	"DEPT_L3_NODE_M":"",
+	"DEPT_L4_NODE_M":"",
+	"DEPT_L5_NODE_M":"",
+	"DEPT_L6_NODE_M":"Desk2",
+	"DEPT_L7_NODE_M":"Grains",
+	"DEPT_LEAF_NODE":"12000"
+},
+{
+	"DEPT_L3_NODE_M":"",
+	"DEPT_L4_NODE_M":"",
+	"DEPT_L5_NODE_M":"",
+	"DEPT_L6_NODE_M":"Desk5",
+	"DEPT_L7_NODE_M":"Softs Other",
+	"DEPT_LEAF_NODE":"13000"
+},
+{
+	"DEPT_L3_NODE_M":"",
+	"DEPT_L4_NODE_M":"",
+	"DEPT_L5_NODE_M":"COMMGMT",
+	"DEPT_L6_NODE_M":"Desk3",
+	"DEPT_L7_NODE_M":"Commodities Management",
+	"DEPT_LEAF_NODE":"30000"
+},
+{
+	"DEPT_L3_NODE_M":"",
+	"DEPT_L4_NODE_M":"",
+	"DEPT_L5_NODE_M":"MM",
+	"DEPT_L6_NODE_M":"Desk4",
+	"DEPT_L7_NODE_M":"Base Metals",
+	"DEPT_LEAF_NODE":"40000"
+}
+]

@@ -1,0 +1,56 @@
+/.vs/PLSystem/DesignTimeBuild/.dtbcache
+/.vs/PLSystem/v16/
+/PLSystem.Business/bin/
+/PLSystem.Business/obj/
+/PLSystem.DAL/bin/
+/PLSystem.DAL/obj/
+/PLSystem/bin/
+/PLSystem/obj/
+/PLSystem-UI/node_modules/.bin/acorn
+
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/PLSystem-UI/dist
+/PLSystem-UI/tmp
+/PLSystem-UI/out-tsc
+# Only exists if Bazel was run
+/PLSystem-UI/bazel-out
+
+# dependencies
+/PLSystem-UI/node_modules
+
+# profiling files
+/PLSystem-UI/chrome-profiler-events*.json
+/PLSystem-UI/speed-measure-plugin*.json
+
+# IDEs and editors
+/PLSystem-UI/.idea
+/PLSystem-UI/.project
+/PLSystem-UI/.classpath
+/PLSystem-UI/.c9/
+/PLSystem-UI/*.launch
+/PLSystem-UI/.settings/
+/PLSystem-UI/*.sublime-workspace
+
+# IDE - VSCode
+/PLSystem-UI/.vscode/*
+/PLSystem-UI/!.vscode/settings.json
+/PLSystem-UI/!.vscode/tasks.json
+/PLSystem-UI/!.vscode/launch.json
+/PLSystem-UI/!.vscode/extensions.json
+/PLSystem-UI/.history/*
+
+# misc
+/PLSystem-UI/.sass-cache
+/PLSystem-UI/connect.lock
+/PLSystem-UI/coverage
+/PLSystem-UI/libpeerconnection.log
+/PLSystem-UI/npm-debug.log
+/PLSystem-UI/yarn-error.log
+/PLSystem-UI/testem.log
+/PLSystem-UI/typings
+
+# System Files
+.DS_Store
+Thumbs.db

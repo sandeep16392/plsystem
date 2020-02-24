@@ -1,0 +1,42 @@
+[
+{
+	"Date":"17-02-2020",
+	"EstimateAmount":"20000",
+	"HierarchyId":"10000"
+},
+{
+	"Date":"17-02-2020",
+	"EstimateAmount":"25000",
+	"HierarchyId":"12000"
+},
+{
+	"Date":"17-02-2020",
+	"EstimateAmount":"10000",
+	"HierarchyId":"30000"
+},
+{
+	"Date":"17-02-2020",
+	"EstimateAmount":"1500",
+	"HierarchyId":"40000"
+},
+{
+	"Date":"18-02-2020",
+	"EstimateAmount":"21000",
+	"HierarchyId":"10000"
+},
+{
+	"Date":"18-02-2020",
+	"EstimateAmount":"26000",
+	"HierarchyId":"12000"
+},
+{
+	"Date":"18-02-2020",
+	"EstimateAmount":"2000",
+	"HierarchyId":"30000"
+},
+{
+	"Date":"18-02-2020",
+	"EstimateAmount":"1000",
+	"HierarchyId":"40000"
+}
+]

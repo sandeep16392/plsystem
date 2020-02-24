@@ -1,0 +1,58 @@
+[
+	{
+		"Business_Date": "17-02-2020",
+		"PortfolioId": "1",
+		"Daily_PL": "45000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+	{
+		"Business_Date": "17-02-2020",
+		"PortfolioId": "2",
+		"Daily_PL": "20000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+{
+	"Business_Date":"17-02-2020",
+	"PortfolioId":"3",
+	"Daily_PL":"-28000",
+	"IsApproved": "false",
+	"IsReviewed": "false"
+},
+	{
+		"Business_Date": "17-02-2020",
+		"PortfolioId": "4",
+		"Daily_PL": "2000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+	{
+		"Business_Date": "18-02-2020",
+		"PortfolioId": "1",
+		"Daily_PL": "35000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+	{
+		"Business_Date": "18-02-2020",
+		"PortfolioId": "2",
+		"Daily_PL": "10000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+	{
+		"Business_Date": "18-02-2020",
+		"PortfolioId": "3",
+		"Daily_PL": "40000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	},
+	{
+		"Business_Date": "18-02-2020",
+		"PortfolioId": "4",
+		"Daily_PL": "5000",
+		"IsApproved": "false",
+		"IsReviewed": "false"
+	}
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "UserGroupId": "admin",
+    "HierarchyId": "10000"
+  },
+  {
+    "UserGroupId": "admin",
+    "HierarchyId": "12000"
+  },
+  {
+    "UserGroupId": "admin",
+    "HierarchyId": "30000"
+  },
+  {
+    "UserGroupId": "admin",
+    "HierarchyId": "40000"
+  },
+  {
+    "UserGroupId": "admin",
+    "HierarchyId": "13000"
+  },
+  {
+    "UserGroupId": "user1",
+    "HierarchyId": "10000"
+  },
+  {
+    "UserGroupId": "user2",
+    "HierarchyId": "12000"
+  },
+  {
+    "UserGroupId": "user3",
+    "HierarchyId": "30000"
+  },
+  {
+    "UserGroupId": "user4",
+    "HierarchyId": "40000"
+  }
+]

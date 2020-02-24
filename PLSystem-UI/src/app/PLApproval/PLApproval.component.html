@@ -1,0 +1,224 @@
+<div class="card row">
+  <div class="card-header">
+    <h5 class="card-title">P&L Approval</h5><br>
+    <h6 class="card-subtitle mb-2 text-muted">Product Controller to enter commentary and approval per desk</h6>
+  </div>
+</div>
+<div class="card-body">
+  <form [formGroup]="queryForm">
+    <div class="row align-items-center">
+      <div class="col-4">
+        <div class="row align-items-center">
+          <div class="col-2">
+            <label class="my-1 mr-2" for="desk">Desk</label>
+          </div>
+          <div class="col-6">
+            <select formControlName="desk" required  class="custom-select my-1 mr-sm-2" id="desk">
+              <option *ngFor="let desk of desks" value="{{desk.deskId}}">{{desk.desk}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="row align-items-center">
+          <div class="col-5">
+            <label class="my-1 mr-2" for="businessDate">Business Date</label>
+          </div>
+          <div class="col-7">
+            <input formControlName="businessDate" class="form-control" type="date" name="businessDate" required>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 align-btn">
+        <button [disabled]="!queryForm.valid" type="submit" class="btn btn-warning my-1" (click)="getPLDetails()">View</button>
+      </div>
+    </div>
+  </form>
+  <hr>
+  <div class="row align-items-center" *ngIf="!isFound && !dataReceived">
+    <div class="col-12">
+      <h4>{{error}}</h4>
+    </div>
+  </div>
+  <div *ngIf="dataReceived">
+    <br>
+    <div class="row align-items-center">
+      <div class="col-6 align-btn">
+        <strong>{{plData?.desk}}</strong>
+      </div>
+      <div class="col-6 align-btn">
+        <strong>{{plData?.businessDate| date:'dd-MMM-yyyy'}}</strong>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-6">
+        <div class="row">
+          <div class="col-4">
+            <label for="currency"><strong>Reporting Currency: </strong></label>
+          </div>
+          <div class="col-6 align-lft">
+            <strong>{{plData?.currency}}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Portfolio</th>
+              <th scope="col">Actual P&L</th>
+              <th scope="col">New Trades</th>
+              <th scope="col">Ammendments</th>
+              <th scope="col">Adjustments</th>
+              <th scope="col">Clean P&L</th>
+              <th scope="col">Unexplained</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let port of plData?.dailyPLTrades">
+              <td>{{port?.portfolio_Name}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.actualPL < 0 }">{{port?.actualPL}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.newTrades < 0 }">{{port?.newTrades}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.ammends < 0 }">{{port?.ammends}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.adjustment < 0 }">{{port?.adjustment}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.cleanPL < 0 }">{{port?.cleanPL}}</td>
+              <td [ngClass]="{ 'negativeNums': port?.unexplained < 0 }">{{port?.unexplained}}</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalPL < 0 }">{{plData?.totalPL}}</td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalNewTrades < 0 }">{{plData?.totalNewTrades}}</td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalAmmendments < 0 }">{{plData?.totalAmmendments}}</td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalAdjustments < 0 }">{{plData?.totalAdjustments}}</td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalCleanPL < 0 }">{{plData?.totalCleanPL}}</td>
+              <td [ngClass]="{ 'negativeNums': plData?.totalUnexplained < 0 }">{{plData?.totalUnexplained}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr>
+    <form>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="dealerEstimate">Dealer Estimate: </label>
+            </div>
+            <div [ngClass]="{ 'negativeNums': plData?.dealerEstimate < 0 }" class="col-6 align-lft">
+              {{plData?.dealerEstimate}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="variance">Variance: </label>
+            </div>
+            <div [ngClass]="{ 'negativeNums': plData?.variance < 0 }" class="col-6 align-lft">
+              {{plData?.variance}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="explainedVariance">Explained Variance: </label>
+            </div>
+            <div class="col-6 align-lft">
+              <input name="explainedVariance" [(ngModel)]="plData.explainedVariance" type="text" class="form-control"
+                id="explainedVariance" [ngClass]="{ 'negativeNums': plData?.explainedVariance < 0 }"
+                placeholder="Explained Variance" (ngModelChange)="onVarianceChange()">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="unexplainedVariance">Unexplained Variance: </label>
+            </div>
+            <div class="col-6 align-lft" [ngClass]="{ 'negativeNums': plData?.unExplainedVariance < 0 }">
+              {{plData?.unExplainedVariance}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="plCommentary">P&L Commentary</label>
+            </div>
+            <div class="col-6 align-lft">
+              <select class="custom-select my-1 mr-sm-2" id="plComment" [(ngModel)]="plData.plCommentarty" [ngModelOptions]="{standalone: true}">
+                <option *ngFor="let c of comments" value="{{c.Value}}">{{c.Value}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-8">
+          <div class="row align-items-center">
+            <div class="col-4">
+              <label for="plCommentary">Variance Commentary</label>
+            </div>
+            <div class="col-6 align-lft">
+              <select [ngModelOptions]="{standalone: true}" class="custom-select my-1 mr-sm-2" id="varianceComment" [(ngModel)]="plData.varianceComentary">
+                <option *ngFor="let c of comments" value="{{c.Value}}" [selected]="c.Value === plData.varianceComentary">
+                  {{c.Value}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row form-group align-items-center">
+        <div class="col-12">
+          <label for="approval">Approval</label>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="isReviewed" [(ngModel)]="plData.isReviewed"
+              [ngModelOptions]="{standalone: true}" [checked]="plData?.isReviewed">
+            <label class="form-check-label" for="isReviewed">
+              The values have been reviewed.
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="isApproved" [(ngModel)]="plData.isApproved"
+              [ngModelOptions]="{standalone: true}" [checked]="plData?.isApproved">
+            <label class="form-check-label" for="isApproved">
+              The Front Office contact responsible for the P&L has approved the published P&L.
+            </label>
+            <div class="invalid-feedback" *ngIf="!plData.isApproved">Check to proceed.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
+        <div class="col-12">
+          <button type="button" [disabled]="!plData?.isApproved || !plData?.isReviewed" class="btn btn-success"
+            (click)="onSubmit()">Submit</button>&nbsp;
+          <button type="button" class="btn btn-success">Download</button>&nbsp;
+          <button type="button" class="btn btn-success" (click)="sendEmail()">Email Front Office</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

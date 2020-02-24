@@ -1,0 +1,66 @@
+[
+{
+	"Business_Date":"17-02-2020",
+	"NewTrades":"23000",
+	"Ammends":"0",
+	"Adjustment":"0",
+	"Unexplained":"300",
+	"PortfolioId":"1"
+},
+{
+	"Business_Date":"17-02-2020",
+	"NewTrades":"0",
+	"Ammends":"9000",
+	"Adjustment":"0",
+	"Unexplained":"-250",
+	"PortfolioId":"2"
+},
+{
+	"Business_Date":"17-02-2020",
+	"NewTrades":"0",
+	"Ammends":"-10000",
+	"Adjustment":"0",
+	"Unexplained":"450",
+	"PortfolioId":"3"
+},
+{
+	"Business_Date":"17-02-2020",
+	"NewTrades":"0",
+	"Ammends":"0",
+	"Adjustment":"0",
+	"Unexplained":"100",
+	"PortfolioId":"4"
+},
+{
+	"Business_Date":"18-02-2020",
+	"NewTrades":"23000",
+	"Ammends":"10000",
+	"Adjustment":"0",
+	"Unexplained":"350",
+	"PortfolioId":"1"
+},
+{
+	"Business_Date":"18-02-2020",
+	"NewTrades":"0",
+	"Ammends":"9000",
+	"Adjustment":"0",
+	"Unexplained":"200",
+	"PortfolioId":"2"
+},
+{
+	"Business_Date":"18-02-2020",
+	"NewTrades":"30000",
+	"Ammends":"-10000",
+	"Adjustment":"0",
+	"Unexplained":"600",
+	"PortfolioId":"3"
+},
+{
+	"Business_Date":"18-02-2020",
+	"NewTrades":"0",
+	"Ammends":"0",
+	"Adjustment":"1000",
+	"Unexplained":"50",
+	"PortfolioId":"4"
+}
+]

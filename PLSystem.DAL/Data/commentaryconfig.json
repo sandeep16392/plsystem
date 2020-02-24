@@ -1,0 +1,30 @@
+[
+{
+	"id":"1",
+	"value":"No estimate"
+},
+{
+	"id":"2",
+	"value":"FO error"
+},
+{
+	"id":"3",
+	"value":"Finance adjustment"
+},
+{
+	"id":"4",
+	"value":"Market data issue"
+},
+{
+	"id":"5",
+	"value":"System operational issue"
+},
+{
+	"id":"6",
+	"value":"System valuation issue"
+},
+{
+	"id":"7",
+	"value":"Valuation estimation issue"
+}
+]
