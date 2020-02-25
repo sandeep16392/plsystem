@@ -1,3 +1,32 @@
-<div>
-  Home Page
+<div *ngIf="authService.loggedIn()">
+  <div class="row align-items-center">
+    <div class="col-2">
+      <label class="my-1 mr-2" for="desk">Desk</label>
+    </div>
+    <div class="col-6">
+      <select formControlName="desk" required  class="custom-select my-1 mr-sm-2" id="desk">
+        <option *ngFor="let desk of desks" value="{{desk.deskId}}">{{desk.desk}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <table class="table table-bordered table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Portfolio</th>
+          <th scope="col">Business Date</th>
+          <th scope="col">Approved</th>
+          <th scope="col">Approval Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Portfolio 1</td>
+          <td>17-02-2020</td>
+          <td>sam</td>
+          <td>25-02-2020</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

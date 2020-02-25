@@ -8,7 +8,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { LoginComponent } from './login/login.component';
 import { PLApprovalComponent } from './PLApproval/PLApproval.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { PreventUnsavedChangesGuard } from './guards/prevent-unsaved-changes.guard';
 import { ConfigurationService } from './services/configuration.service';
 import { PlApprovalService } from './services/plApproval.service';
@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 import { AuthGuard } from './resolver/auth.guard.ts';
 import { ConfigResolver } from './resolver/config.resolver';
 import { HomeComponent } from './home/home.component';
+import { CustomHttpInterceptor } from './resolver/CustomHttpInterceptor';
 
 
 export function tokenGetter() {
@@ -52,7 +53,11 @@ export function tokenGetter() {
       PlApprovalService,
       AlertifyService,
       AuthGuard,
-      ConfigResolver
+      ConfigResolver,
+      {  provide: HTTP_INTERCEPTORS,
+         useClass: CustomHttpInterceptor,
+         multi: true
+      }
    ],
    bootstrap: [
       AppComponent

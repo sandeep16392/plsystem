@@ -17,6 +17,8 @@ namespace PLSystem.DAL.Common
             CreateMap<User, UserDetailsDm>();
             CreateMap<User, UserListDm>();
             CreateMap<UserListDm, User>();
+            CreateMap<PLDataExportDm, PLDeskDm>();
+            CreateMap<PLDeskDm, PLDataExportDm>();
         }
     }
 }

@@ -72,6 +72,7 @@ namespace PLSystem.DAL.Repositories
                 dailyDeskDm.IsReviewed = dailyPl.IsReviewed;
                 dailyDeskDm.PLCommentary = dailyPl.Commentary1;
                 dailyDeskDm.VarianceComentary = dailyPl.Commentary2;
+                dailyDeskDm.ApprovedBy = dailyPl.UserId;
             }
             if (!tradesFound)
                 return null;
@@ -104,6 +105,7 @@ namespace PLSystem.DAL.Repositories
                 dailyPl.IsReviewed = pLDeskDm.IsReviewed;
                 dailyPl.ApprovedDate = DateTime.UtcNow;
                 dailyPl.LastUpdated = DateTime.UtcNow;
+                dailyPl.UserId = pLDeskDm.ApprovedBy;
                 //dailyPl.ApprovedBy = ushort   //TODO: add approver when user implemented
             }
 

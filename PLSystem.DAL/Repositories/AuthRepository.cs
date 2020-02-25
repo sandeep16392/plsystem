@@ -45,7 +45,7 @@ namespace PLSystem.DAL.Repositories
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(username));
+            var user = await _context.Users.Include(x=>x.UserGroups).FirstOrDefaultAsync(x => x.UserName.Equals(username));
             if (user == null)
             {
                 return null;

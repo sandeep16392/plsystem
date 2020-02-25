@@ -8,7 +8,7 @@ namespace PLSystem.Business.Contract
 {
     public interface IProfitLossService
     {
-        Task<List<DeskDm>> GetDesksAsync();
+        Task<List<DeskDm>> GetDesksAsync(List<string> roles);
         Task<PLDeskDm> GetDailyPLTradeAsync(string deskId, DateTime businessDate);
         Task<string> GetComments();
         Task<bool> UpdateAndApprove(PLDeskDm pLDeskDm);

@@ -26,9 +26,10 @@ namespace PLSystem.DAL.Repositories
             return comments;
         }
 
-        public async Task<List<DeskDm>> GetDesksAsync()
+        public async Task<List<DeskDm>> GetDesksAsync(List<string> roles)
         {
-            var desks = await _context.Hierarchies.Select(x => new DeskDm
+            var access = await _context.UserGroupHierarchies.Where(x => roles.Contains(x.UserGroupId)).Select(x=>x.HierarchyId).ToListAsync();
+            var desks = await _context.Hierarchies.Where(x=>access.Contains(x.DEPT_LEAF_NODE)).Select(x => new DeskDm
             {
                 Desk = x.DEPT_L6_NODE_M,
                 DeskId = x.DEPT_LEAF_NODE

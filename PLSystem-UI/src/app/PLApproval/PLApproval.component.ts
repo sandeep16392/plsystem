@@ -24,6 +24,13 @@ export class PLApprovalComponent implements OnInit {
   error: string;
   queryForm: FormGroup;
   plForm: FormGroup;
+  type: number;
+
+  public fileOptions = [
+    { value: 0, id: 'PDF', enabled: true },
+    { value: 1, id: 'CSV', enabled: true },
+    { value: 2, id: 'Excel', enabled: false }
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -108,7 +115,26 @@ export class PLApprovalComponent implements OnInit {
             alert(res.message);
           },
           err => {
-            alert(err.error.message);
+            alert('Email Failure');
+          }
+        );
+    }
+  }
+
+  downloadFile() {
+    if (confirm('Download File?')) {
+      this.plService
+        .downloadFile(
+          this.type,
+          this.queryForm.get('desk').value,
+          this.queryForm.get('businessDate').value
+        )
+        .subscribe(
+          res => {
+            alert('File Downloaded.');
+          },
+          err => {
+            alert('File Download failed!');
           }
         );
     }

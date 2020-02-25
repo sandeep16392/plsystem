@@ -19,5 +19,6 @@ namespace PLSystem.DAL.EntityModels
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
         public ICollection<UserUserGroup> UserGroups { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }

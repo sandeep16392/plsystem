@@ -60,10 +60,12 @@ namespace PLSystem.Controllers
             if (userFromRepo == null)
                 return Unauthorized();
 
+            var roles = userFromRepo.UserGroups.Select(x => x.UserGroupId).ToArray();
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName.ToLower())
+                new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserName.ToString()),
+                new Claim(ClaimTypes.Name, $"{userFromRepo.FirstName} {userFromRepo.LastName}"),
+                new Claim(ClaimTypes.Role, string.Join(",",roles))
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Token));

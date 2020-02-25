@@ -52,9 +52,9 @@ namespace PLSystem.Business.Services
             return isUpdated;
         }
 
-        public async Task<List<DeskDm>> GetDesksAsync()
+        public async Task<List<DeskDm>> GetDesksAsync(List<string> roles)
         {
-            var desks = await _configurationRepository.GetDesksAsync();
+            var desks = await _configurationRepository.GetDesksAsync(roles);
 
             return desks;
         }

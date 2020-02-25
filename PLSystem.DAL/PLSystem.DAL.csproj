@@ -7,6 +7,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200224181050_user-latest-mig.cs" />
     <Compile Remove="Migrations\20200224181050_user-latest-mig.Designer.cs" />
+    <Compile Remove="Migrations\20200225071603_user-approval-mig.cs" />
+    <Compile Remove="Migrations\20200225071603_user-approval-mig.Designer.cs" />
+    <Compile Remove="Migrations\20200225071829_user-approval.cs" />
+    <Compile Remove="Migrations\20200225071829_user-approval.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,17 +4,12 @@ using System.Text;
 
 namespace PLSystem.DAL.DomainModels
 {
-    public class PLDeskDm
+    public class PLDataExportDm
     {
-        public PLDeskDm()
-        {
-            DailyPLTrades = new List<DailyPLTradeDm>();
-        }
         public string HeirarchyId { get; set; }
         public string Desk { get; set; }
         public DateTime BusinessDate { get; set; }
         public string Currency { get; set; }
-        public List<DailyPLTradeDm> DailyPLTrades { get; set; }
         public double TotalNewTrades { get; set; }
         public double TotalAmmendments { get; set; }
         public double TotalAdjustments { get; set; }

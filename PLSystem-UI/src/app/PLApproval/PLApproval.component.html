@@ -212,10 +212,16 @@
         </div>
       </div>
       <div class="row form-group align-items-center">
+        <div class="form-check form-check-inline" *ngFor="let option of fileOptions">
+          <input required [disabled]="option.enabled" class="form-check-input" type="radio" name="fileDownloadOptions" id="fileRadio-{{option.id}}" [value]="option.value" [(ngModel)]="type">
+          <label class="form-check-label" for="fileRadio1">{{option.id}}</label>
+        </div>
+      </div>
+      <div class="row form-group align-items-center">
         <div class="col-12">
           <button type="button" [disabled]="!plData?.isApproved || !plData?.isReviewed" class="btn btn-success"
             (click)="onSubmit()">Submit</button>&nbsp;
-          <button type="button" class="btn btn-success">Download</button>&nbsp;
+          <button type="button" class="btn btn-success" (click)="downloadFile()">Download</button>&nbsp;
           <button type="button" class="btn btn-success" (click)="sendEmail()">Email Front Office</button>
         </div>
       </div>

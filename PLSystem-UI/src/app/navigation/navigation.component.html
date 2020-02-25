@@ -9,14 +9,11 @@
           <li class="nav-item">
             <a class="nav-link" href="plapproval">P&L Approval</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-          </li>
         </ul>
         <div>
           <a class="text-light" *ngIf="authService.loggedIn()">
             Welcome {{authService.decodedToken.unique_name | titlecase}}
-          </a>
+          </a>&nbsp;
         </div>
         <div>
           <a *ngIf="authService.loggedIn()" class="btn btn-warning" (click)="logout()"><i class="fa fa-sign-out mr-2"></i>Logout</a>

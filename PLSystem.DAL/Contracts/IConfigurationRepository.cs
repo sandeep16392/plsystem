@@ -8,7 +8,7 @@ namespace PLSystem.DAL.Contracts
 {
     public interface IConfigurationRepository
     {
-        Task<List<DeskDm>> GetDesksAsync();
+        Task<List<DeskDm>> GetDesksAsync(List<string> roles);
         Task<string> GetComments();
     }
 }
