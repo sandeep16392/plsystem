@@ -6,9 +6,15 @@ import { ConfigResolver } from './resolver/config.resolver';
 import { AuthGuard } from './resolver/auth.guard.ts';
 import { NavigationComponent } from './navigation/navigation.component';
 import { HomeComponent } from './home/home.component';
+import { DeskResolver } from './resolver/desk.resolver';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  {
+    path: '',
+    component: HomeComponent,
+    resolve: { desks: DeskResolver },
+    runGuardsAndResolvers: 'always'
+  },
   {
     path: 'login',
     component: LoginComponent

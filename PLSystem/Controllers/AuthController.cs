@@ -58,7 +58,11 @@ namespace PLSystem.Controllers
             var userFromRepo = await _authRepository.Login(loginUser.Username.ToLower(), loginUser.Password);
 
             if (userFromRepo == null)
-                return Unauthorized();
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
 
             var roles = userFromRepo.UserGroups.Select(x => x.UserGroupId).ToArray();
             var claims = new[]

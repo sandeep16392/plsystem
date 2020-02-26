@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PLSystem.Business.Contract;
+using PLSystem.DAL.DomainModels;
 
 namespace PLSystem.Controllers
 {
@@ -26,7 +27,11 @@ namespace PLSystem.Controllers
         public async Task<IActionResult> GetDesks(string userId)
         {
             if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return Unauthorized();
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
 
             var roles = User.FindFirst(ClaimTypes.Role).Value.Split(",").ToList();
 
@@ -39,7 +44,11 @@ namespace PLSystem.Controllers
         public async Task<IActionResult> GetComments(string userId)
         {
             if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return Unauthorized();
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
 
             var comments = await _profitLossService.GetComments();
             return Ok(comments);

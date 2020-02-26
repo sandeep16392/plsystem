@@ -12,5 +12,6 @@ namespace PLSystem.Business.Contract
         Task<PLDeskDm> GetDailyPLTradeAsync(string deskId, DateTime businessDate);
         Task<string> GetComments();
         Task<bool> UpdateAndApprove(PLDeskDm pLDeskDm);
+        Task<List<DesksPortfolioViewDm>> GetAllDeskDetails(List<string> roles);
     }
 }

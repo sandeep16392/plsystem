@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap';
+import { saveAs } from 'file-saver';
 import { IDesk } from '../models/IDesk';
 import { PlApprovalService } from '../services/plApproval.service';
 import { ConfigurationService } from '../services/configuration.service';
 import { PLData } from '../models/PLData';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AlertifyService } from '../services/alertify.service';
 
 @Component({
   templateUrl: './PLApproval.component.html',
@@ -27,25 +29,26 @@ export class PLApprovalComponent implements OnInit {
   type: number;
 
   public fileOptions = [
-    { value: 0, id: 'PDF', enabled: true },
-    { value: 1, id: 'CSV', enabled: true },
-    { value: 2, id: 'Excel', enabled: false }
+    { value: 0, id: 'PDF', disabled: false },
+    { value: 1, id: 'CSV', disabled: false },
+    { value: 2, id: 'Excel', disabled: false }
   ];
 
   constructor(
     private route: ActivatedRoute,
     private plService: PlApprovalService,
     private configService: ConfigurationService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private alertify: AlertifyService
   ) {}
 
   ngOnInit() {
-    // this.route.data.subscribe(data => {
-    //   this.desks = data.desks;
-    // });
-    this.configService.getDesks().subscribe(resp => {
-      this.desks = resp;
+    this.route.data.subscribe(data => {
+      this.desks = data.desks;
     });
+    // this.configService.getDesks().subscribe(resp => {
+    //   this.desks = resp;
+    // });
     this.configService.getCommentaries().subscribe(resp => {
       this.comments = resp;
     });
@@ -71,10 +74,9 @@ export class PLApprovalComponent implements OnInit {
           console.log(resp);
         },
         error => {
-          console.log(error);
           if (error.status == 404) {
             this.isFound = false;
-            this.error = error.error;
+            this.error = error.error.message;
           }
         }
       );
@@ -93,18 +95,18 @@ export class PLApprovalComponent implements OnInit {
   }
 
   onSubmit() {
-    if (confirm('Are you sure about approval?')) {
+    this.alertify.confirm('Are you sure about approval?', () => {
       this.plData.explainedVariance = +this.plData.explainedVariance;
       this.plService.approveTrade(this.plData).subscribe(resp => {
         if (resp) {
-          alert('Approved!');
+          this.alertify.success('Approved!');
         }
       });
-    }
+    });
   }
 
   sendEmail() {
-    if (confirm('Send email to Front Office?')) {
+    this.alertify.confirm('Send email to Front Office?', () => {
       this.plService
         .sendEmail(
           this.queryForm.get('desk').value,
@@ -112,17 +114,17 @@ export class PLApprovalComponent implements OnInit {
         )
         .subscribe(
           res => {
-            alert(res.message);
+            this.alertify.success(res.message);
           },
           err => {
-            alert('Email Failure');
+            this.alertify.error('Email Failure');
           }
         );
-    }
+    });
   }
 
   downloadFile() {
-    if (confirm('Download File?')) {
+    this.alertify.confirm('Download File?', () => {
       this.plService
         .downloadFile(
           this.type,
@@ -131,12 +133,15 @@ export class PLApprovalComponent implements OnInit {
         )
         .subscribe(
           res => {
-            alert('File Downloaded.');
+            const blob = new Blob([res], { type: 'application/octet-stream' });
+            const fileName = 'desk.csv';
+            saveAs(blob, fileName);
+            this.alertify.success('File Downloaded.');
           },
           err => {
-            alert('File Download failed!');
+            this.alertify.error('File Download failed!');
           }
         );
-    }
+    });
   }
 }

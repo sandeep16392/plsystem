@@ -10,10 +10,11 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, mergeMap, finalize } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { AppResponse } from '../models/AppResponse';
+import { AlertifyService } from '../services/alertify.service';
 
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private alertify: AlertifyService) {}
 
   // Add authozization token to the request
   private setHeaders(request: HttpRequest<any>) {
@@ -50,10 +51,17 @@ export class CustomHttpInterceptor implements HttpInterceptor {
             case 404:
             case 500:
             default:
-              return throwError({
-                status: error.status,
-                message: error.message
-              } as AppResponse);
+              {
+                if (error && error.error) {
+                  this.alertify.error(error.error.message);
+                } else {
+                  this.alertify.error(error.message);
+                }
+              }
+              // return throwError({
+              //   status: error.status,
+              //   message: error.message
+              // } as AppResponse);
           }
         } else if (error.error instanceof ErrorEvent) {
           // Client Side Error

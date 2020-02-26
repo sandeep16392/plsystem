@@ -65,20 +65,36 @@ namespace PLSystem.Controllers
                 dailyPlInfos = await _profitLossService.GetDailyPLTradeAsync(deskId, businessDate);
                 if (dailyPlInfos == null)
                 {
-                    return NotFound("No Trades found.");
+                    return NotFound(new ResponseDm
+                    {
+                        IsSuccess = false,
+                        Message = "No Trades found."
+                    });
                 }
             }
             catch (CustomDataException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                });
             }
             catch (InvalidOperationException ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "Error occured. Please contact administrator."
+                });
             }
             return Ok(dailyPlInfos);
         }
@@ -87,13 +103,17 @@ namespace PLSystem.Controllers
         public async Task<IActionResult> UpdateAndApprove(PLDeskDm plDesk, string userId)
         {
             if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return Unauthorized();
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
 
             var roles = User.FindFirst(ClaimTypes.Role).Value.Split(",").ToList();
 
             var accessDetails = await _profitLossService.GetDesksAsync(roles);
 
-            if (!accessDetails.Any(x => x.DeskId == plDesk.Desk))
+            if (!accessDetails.Any(x => x.DeskId == plDesk.HeirarchyId))
                 return Unauthorized(new ResponseDm
                 {
                     IsSuccess = false,
@@ -106,7 +126,11 @@ namespace PLSystem.Controllers
 
             var isUpdated = await _profitLossService.UpdateAndApprove(plDesk);
             if (!isUpdated)
-                return NotFound(plDesk);
+                return NotFound(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "Unable to update."
+                });
 
             return Ok(plDesk);
         }
@@ -115,7 +139,11 @@ namespace PLSystem.Controllers
         public async Task<IActionResult> SendEmail(string userId, string deskId, [FromQuery]DateTime businessDate)
         {
             if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
-                return Unauthorized();
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
 
             var roles = User.FindFirst(ClaimTypes.Role).Value.Split(",").ToList();
 
@@ -137,23 +165,86 @@ namespace PLSystem.Controllers
             if (res.IsSuccess)
                 return Ok(res);
             else
-                return StatusCode(StatusCodes.Status403Forbidden, res);
+                return StatusCode(StatusCodes.Status403Forbidden, new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = res.Message
+                });
         }
         [HttpGet("file/{deskId}/{type}")]
-        public async Task<IActionResult> DownloadFile(int type, string deskId, [FromQuery]DateTime businessDate)
+        [Produces("text/csv")]
+        public async Task<IActionResult> DownloadFile(string userId, int type, string deskId, [FromQuery]DateTime businessDate)
         {
+            if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
+
+            var roles = User.FindFirst(ClaimTypes.Role).Value.Split(",").ToList();
+
+            var accessDetails = await _profitLossService.GetDesksAsync(roles);
+
+            if (!accessDetails.Any(x => x.DeskId == deskId))
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = $"User Not Authorized access this Desk",
+                    Errors = new List<string>
+                    {
+                        $"DeskId - {deskId}"
+                    }
+                });
+            var fileName = $"{deskId}-{businessDate.ToString("dd-MM-yyyy")}.csv";
             var contentType = string.Empty;
-            var resp = await _fileDownloadService.DownloadCsv(deskId, businessDate);
-            var result = new FileContentResult(Encoding.UTF8.GetBytes(resp), "application/octet-stream");
-
-            if (type == (int)FileType.CSV)
+            string result="";
+            try
             {
-                contentType = "text/csv";
-                result.FileDownloadName = $"{deskId}-{businessDate.ToString("dd-MM-yyyy")}.csv";
-                //result.ContentType = contentType;
+                if (type == (int)FileType.CSV)
+                {
+                    result = await _fileDownloadService.DownloadCsv(deskId, businessDate);
+                }
             }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "Error occured. Please contact administrator."
+                });
+            }
+            
 
-            return result;//File(Encoding.UTF8.GetBytes(resp), "text/csv", "desk.csv");
+            var resp = new FileContentResult(Encoding.UTF8.GetBytes(result), "application/octet-stream");
+            return resp;
+        }
+
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAllDeskDetails(string userId)
+        {
+            if (userId != User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                return Unauthorized(new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "User not Authorized."
+                });
+
+            var roles = User.FindFirst(ClaimTypes.Role).Value.Split(",").ToList();
+
+            try
+            {
+                var deskLists = await _profitLossService.GetAllDeskDetails(roles);
+                return Ok(deskLists);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseDm
+                {
+                    IsSuccess = false,
+                    Message = "Error occured. Please contact administrator."
+                });
+            }
         }
     }
 }

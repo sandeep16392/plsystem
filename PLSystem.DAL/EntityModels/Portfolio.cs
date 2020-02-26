@@ -15,7 +15,7 @@ namespace PLSystem.DAL.EntityModels
         public bool IsActive { get; set; }
         public string HierarchyId { get; set; }
         public Hierarchy Hierarchy { get; set; }
-
+        public string Currency { get; set; }
         public ICollection<DailyPL> DailyPLs { get; set; }
         public ICollection<DailyTrade> DailyTrades { get; set; }
 

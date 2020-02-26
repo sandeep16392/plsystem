@@ -212,9 +212,11 @@
         </div>
       </div>
       <div class="row form-group align-items-center">
-        <div class="form-check form-check-inline" *ngFor="let option of fileOptions">
-          <input required [disabled]="option.enabled" class="form-check-input" type="radio" name="fileDownloadOptions" id="fileRadio-{{option.id}}" [value]="option.value" [(ngModel)]="type">
-          <label class="form-check-label" for="fileRadio1">{{option.id}}</label>
+        <div class="col-12">
+          <div class="form-check form-check-inline" *ngFor="let option of fileOptions">
+            <input required [disabled]="option.disabled" class="form-check-input" type="radio" name="fileDownloadOptions" id="fileRadio-{{option.id}}" [value]="option.value" [(ngModel)]="type">
+            <label class="form-check-label" for="fileRadio1">{{option.id}}</label>
+          </div>
         </div>
       </div>
       <div class="row form-group align-items-center">

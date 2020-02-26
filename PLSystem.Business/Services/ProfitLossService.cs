@@ -52,6 +52,11 @@ namespace PLSystem.Business.Services
             return isUpdated;
         }
 
+        public async Task<List<DesksPortfolioViewDm>> GetAllDeskDetails(List<string> roles)
+        {
+            var deskList = await _profitLossRepository.GetAllDeskDetails(roles);
+            return deskList;
+        }
         public async Task<List<DeskDm>> GetDesksAsync(List<string> roles)
         {
             var desks = await _configurationRepository.GetDesksAsync(roles);

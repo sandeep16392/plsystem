@@ -36,8 +36,7 @@ namespace PLSystem.DAL.Repositories
             {
                 HeirarchyId = plData.DEPT_LEAF_NODE,
                 Desk = plData.DEPT_L6_NODE_M,
-                BusinessDate = date,
-                Currency = "AUD"
+                BusinessDate = date
             };
             var tradesFound = false;
             foreach (var p in portfolios)
@@ -53,7 +52,7 @@ namespace PLSystem.DAL.Repositories
                 {
                     tradesFound = true;
                 }
-
+                dailyDeskDm.Currency = p.Currency;
                 dailyDeskDm.DailyPLTrades.Add(new DailyPLTradeDm
                 {
                     ActualPL = dailyPl.Daily_PL,
@@ -132,9 +131,54 @@ namespace PLSystem.DAL.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<DeskDm>> GetDesksAsync()
+        public async Task<List<DesksPortfolioViewDm>> GetAllDeskDetails(List<string> roles)
         {
-            var desks = await _context.Hierarchies.Select(x => new DeskDm
+            var desks = await GetDesksAsync(roles);
+            var deskList = new List<DesksPortfolioViewDm>();
+            foreach (var desk in desks)
+            {
+                var deskId = desk.DeskId;
+
+                var portfolios = await _context.Portfolios.Where(x => x.HierarchyId == deskId).ToListAsync();
+
+                if (portfolios == null)
+                    throw new InvalidOperationException("No Portfolio's found.");
+
+                
+                foreach (var p in portfolios)
+                {
+                    var dailyPls = await _context.DailyPLs.Where(x => x.PortfolioId == p.PortfolioId).ToListAsync();
+                    var dailyTrades = await _context.DailyTrades.Where(x => x.PortfolioId == p.PortfolioId).ToListAsync();
+                    var dailyDeskDm = new DesksPortfolioViewDm
+                    {
+                        DeskId = desk.DeskId,
+                        Desk = desk.Desk,
+                    };
+                    foreach (var dp in dailyPls)
+                    {
+                        
+                        dailyDeskDm.PortfolioTrades.Add(new PortfolioTradeDm
+                        {
+                            PortfolioId = dp.PortfolioId,
+                            Portfolio_Name = dp.Portfolio.Portfolio_Name,
+                            ApprovalDate = dp.ApprovedDate,
+                            ApprovedBy = dp.UserId,
+                            BusinessDate = dp.Business_Date,
+                            Currency = p.Currency
+                        });
+                        deskList.Add(dailyDeskDm);
+                    }
+                }
+            }
+
+            return deskList;
+            
+        }
+
+        public async Task<List<DeskDm>> GetDesksAsync(List<string> roles)
+        {
+            var access = await _context.UserGroupHierarchies.Where(x => roles.Contains(x.UserGroupId)).Select(x => x.HierarchyId).ToListAsync();
+            var desks = await _context.Hierarchies.Where(x => access.Contains(x.DEPT_LEAF_NODE)).Select(x => new DeskDm
             {
                 Desk = x.DEPT_L6_NODE_M,
                 DeskId = x.DEPT_LEAF_NODE

@@ -18,6 +18,7 @@ import { AuthGuard } from './resolver/auth.guard.ts';
 import { ConfigResolver } from './resolver/config.resolver';
 import { HomeComponent } from './home/home.component';
 import { CustomHttpInterceptor } from './resolver/CustomHttpInterceptor';
+import { DeskResolver } from './resolver/desk.resolver';
 
 
 export function tokenGetter() {
@@ -57,7 +58,8 @@ export function tokenGetter() {
       {  provide: HTTP_INTERCEPTORS,
          useClass: CustomHttpInterceptor,
          multi: true
-      }
+      },
+      DeskResolver
    ],
    bootstrap: [
       AppComponent
