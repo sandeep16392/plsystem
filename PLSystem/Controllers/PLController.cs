@@ -14,7 +14,7 @@ using PLSystem.DAL.DomainModels;
 
 namespace PLSystem.Controllers
 {
-    [Route("api/[controller]/{userId}")]
+    [Route("api/pl/{userId}")]
     [ApiController]
     public class PLController : ControllerBase
     {

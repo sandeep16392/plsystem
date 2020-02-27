@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,6 @@ namespace PLSystem
             services.AddControllers();
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration["PLSystemDatabase"]));
             services.AddAutoMapper(typeof(AutoMapperProfiles));
-
             //Custom Registration
             services.AddScoped<IProfitLossRepository, ProfitLossRepository>();
             services.AddScoped<IProfitLossService, ProfitLossService>();
@@ -100,25 +100,37 @@ namespace PLSystem
 
             app.UseRouting();
 
-
-            //app.UseCors(
-            //    options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
-            //);
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCors(
+                options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+            );
+            //app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PLSystem API V1");
             });
-            app.UseDefaultFiles();
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                if (!Path.HasExtension(context.Request.Path.Value) &&
+                    !context.Request.Path.Value.StartsWith("/api/"))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
+            });
+
+            app.UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } });
             app.UseStaticFiles();
         }
 

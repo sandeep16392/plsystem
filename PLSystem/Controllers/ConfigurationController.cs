@@ -12,7 +12,7 @@ using PLSystem.DAL.DomainModels;
 namespace PLSystem.Controllers
 {
     [Authorize]
-    [Route("api/[controller]/{userId}")]
+    [Route("api/configuration/{userId}")]
     [ApiController]
     public class ConfigurationController : ControllerBase
     {

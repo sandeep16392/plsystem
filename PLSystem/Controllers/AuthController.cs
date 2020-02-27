@@ -16,7 +16,7 @@ using PLSystem.DAL.EntityModels;
 
 namespace PLSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {

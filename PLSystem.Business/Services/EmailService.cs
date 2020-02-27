@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PLSystem.DAL.Contracts;
 using PLSystem.Business.Common;
 using PLSystem.DAL.DomainModels;
+using Microsoft.Extensions.Configuration;
 
 namespace PLSystem.Business.Services
 {
@@ -15,23 +16,30 @@ namespace PLSystem.Business.Services
     {
         private readonly IProfitLossRepository _profitLossRepository;
 
-        public EmailService(IProfitLossRepository profitLossRepository)
+        public EmailService(IProfitLossRepository profitLossRepository, IConfiguration configuration)
         {
             this._profitLossRepository = profitLossRepository;
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
+
         public async Task<EmailResponseDm> SendEmail(string deskId, DateTime businessDate)
         {
             bool isUpdated = false;
-            string toEmail = "acc.sandeep.16392@gmail.com";
+            string toEmail = Configuration["toMail"];
             try
             {
                 var plDetail = await _profitLossRepository.GetDailyPLTradeAsync(deskId, businessDate);
                 var body = string.Format(Constants.EmailTemplate, plDetail.TotalPL, plDetail.DealerEstimate, 
                     plDetail.Variance, plDetail.ExplainedVariance, plDetail.UnExplainedVariance, plDetail.PLCommentary, 
                     plDetail.VarianceComentary);
+                var fromMail = Configuration["fromMail"];
+                var fromName = Configuration["fromName"];
+                var mailPwd = Configuration["fromPwd"];
                 MailMessage mail = new MailMessage()
                 {
-                    From = new MailAddress("sandeepkumar16392@gmail.com", "Sandeep")
+                    From = new MailAddress(fromMail, fromName)
                 };
                 mail.To.Add(new MailAddress(toEmail));
                 //mail.CC.Add(new MailAddress(_emailSettings.CcEmail));
@@ -41,9 +49,10 @@ namespace PLSystem.Business.Services
                 mail.IsBodyHtml = true;
                 mail.Priority = MailPriority.High;
 
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                //using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                using (SmtpClient smtp = new SmtpClient(Configuration["mailClient"], Convert.ToInt32(Configuration["mailPort"])))
                 {
-                    smtp.Credentials = new NetworkCredential("sandeepkumar16392@gmail1.com", "rooosgggrglsltmi");
+                    smtp.Credentials = new NetworkCredential(fromMail, mailPwd);
                     smtp.EnableSsl = true;
                     await smtp.SendMailAsync(mail);
                 }

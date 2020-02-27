@@ -19,12 +19,12 @@
     </div>
   </form>
   <hr>
-  <div class="row align-items-center" *ngIf="!detailsAvailable">
+  <div class="row align-items-center" *ngIf="selectedDeskDetails.length <= 0">
     <div class="col-12">
       <h4><strong>Data not available for selected desk.</strong></h4>
     </div>
   </div>
-  <div class="row align-items-center" *ngIf="detailsAvailable">
+  <div class="row align-items-center" *ngIf="selectedDeskDetails.length > 0">
     <div class="col-12">
       <table class="table table-bordered table-dark">
         <thead>
