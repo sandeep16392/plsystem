@@ -123,7 +123,7 @@ namespace PLSystem.Controllers
                         $"DeskId - {plDesk.Desk}"
                     }
                 });
-
+            plDesk.ApprovedBy = userId;
             var isUpdated = await _profitLossService.UpdateAndApprove(plDesk);
             if (!isUpdated)
                 return NotFound(new ResponseDm

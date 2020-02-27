@@ -160,7 +160,7 @@
               <label for="plCommentary">P&L Commentary</label>
             </div>
             <div class="col-6 align-lft">
-              <select class="custom-select my-1 mr-sm-2" id="plComment" [(ngModel)]="plData.plCommentarty" [ngModelOptions]="{standalone: true}">
+              <select class="custom-select my-1 mr-sm-2" id="plComment" [(ngModel)]="plData.plCommentary" [ngModelOptions]="{standalone: true}">
                 <option *ngFor="let c of comments" value="{{c.Value}}">{{c.Value}}</option>
               </select>
             </div>

@@ -30,19 +30,19 @@
         <thead>
           <tr>
             <th scope="col">Portfolio</th>
-            <th scope="col">Business Date</th>
             <th scope="col">Approved By</th>
-            <th scope="col">Approval Date</th>
             <th scope="col">Currency</th>
+            <th scope="col">Business Date</th>
+            <th scope="col">Approval Date</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let d of selectedDeskDetails">
             <td>{{d.portfolio_Name}}</td>
-            <td>{{d.businessDate | date:'dd-MMM-yyyy'}}</td>
             <td>{{d.approvedBy}}</td>
-            <td>{{d.approvalDate | date:'dd-MMM-yyyy'}}</td>
             <td>{{d.currency}}</td>
+            <td>{{d.businessDate | date:'dd-MMM-yyyy'}}</td>
+            <td>{{d.approvalDate | date:'dd-MMM-yyyy'}}</td>
           </tr>
         </tbody>
       </table>

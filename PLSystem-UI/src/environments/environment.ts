@@ -3,8 +3,6 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  blacklistDomain: ['[::]:5001/api/Auth'],
-  whiteListedDomain: ['[::]:5001'],
   production: false,
   loginUrl : 'api/Auth/login',
   registerUrl : 'api/Auth/register',
@@ -12,6 +10,7 @@ export const environment = {
 };
 
 /*
+*baseUrl : 'https://localhost:5001/'
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *

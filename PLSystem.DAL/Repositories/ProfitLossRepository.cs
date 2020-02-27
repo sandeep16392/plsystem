@@ -94,7 +94,7 @@ namespace PLSystem.DAL.Repositories
                 .FirstOrDefaultAsync();
 
             dealEst.ExplainedVariance = pLDeskDm.ExplainedVariance;
-
+            var user = await _context.Users.Where(x => x.UserName == pLDeskDm.ApprovedBy).FirstOrDefaultAsync();
             foreach (var trade in pLDeskDm.DailyPLTrades)
             {
                 var dailyPl = await _context.DailyPLs.Where(x => x.PortfolioId ==trade.PortfolioId && x.Business_Date == pLDeskDm.BusinessDate).FirstOrDefaultAsync();
@@ -104,7 +104,8 @@ namespace PLSystem.DAL.Repositories
                 dailyPl.IsReviewed = pLDeskDm.IsReviewed;
                 dailyPl.ApprovedDate = DateTime.UtcNow;
                 dailyPl.LastUpdated = DateTime.UtcNow;
-                dailyPl.UserId = pLDeskDm.ApprovedBy;
+                dailyPl.UserId = user.UserName;
+                dailyPl.User = user;
                 //dailyPl.ApprovedBy = ushort   //TODO: add approver when user implemented
             }
 
@@ -144,19 +145,19 @@ namespace PLSystem.DAL.Repositories
                 if (portfolios == null)
                     throw new InvalidOperationException("No Portfolio's found.");
 
-                
+                var dailyDeskDm = new DesksPortfolioViewDm
+                {
+                    DeskId = desk.DeskId,
+                    Desk = desk.Desk,
+                };
+
                 foreach (var p in portfolios)
                 {
-                    var dailyPls = await _context.DailyPLs.Where(x => x.PortfolioId == p.PortfolioId).ToListAsync();
+                    var dailyPls = await _context.DailyPLs.Include(x=>x.User).Where(x => x.PortfolioId == p.PortfolioId).ToListAsync();
                     var dailyTrades = await _context.DailyTrades.Where(x => x.PortfolioId == p.PortfolioId).ToListAsync();
-                    var dailyDeskDm = new DesksPortfolioViewDm
-                    {
-                        DeskId = desk.DeskId,
-                        Desk = desk.Desk,
-                    };
+                    
                     foreach (var dp in dailyPls)
                     {
-                        
                         dailyDeskDm.PortfolioTrades.Add(new PortfolioTradeDm
                         {
                             PortfolioId = dp.PortfolioId,
@@ -166,9 +167,9 @@ namespace PLSystem.DAL.Repositories
                             BusinessDate = dp.Business_Date,
                             Currency = p.Currency
                         });
-                        deskList.Add(dailyDeskDm);
                     }
                 }
+                deskList.Add(dailyDeskDm);
             }
 
             return deskList;

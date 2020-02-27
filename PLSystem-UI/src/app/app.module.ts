@@ -42,9 +42,7 @@ export function tokenGetter() {
       ReactiveFormsModule,
       JwtModule.forRoot({
          config: {
-            tokenGetter: tokenGetter,
-            whitelistedDomains: environment.whiteListedDomain,
-            blacklistedRoutes: environment.blacklistDomain
+            tokenGetter: tokenGetter
          }
       })
    ],

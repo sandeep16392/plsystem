@@ -39,12 +39,13 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       catchError((error: any) => {
         if (error instanceof HttpErrorResponse) {
           switch (error.status) {
-            case 0:
+            case 0:{
+              this.alertify.error('Unable to connect to server, please contact admin');
               return throwError({
                 status: error.status,
                 message: 'Unable to connect to server, please contact admin'
               } as AppResponse);
-
+            }
             case 400:
             case 401:
             case 403:
@@ -65,16 +66,10 @@ export class CustomHttpInterceptor implements HttpInterceptor {
           }
         } else if (error.error instanceof ErrorEvent) {
           // Client Side Error
-          return throwError({
-            status: error.status,
-            message: error.error.message
-          } as AppResponse);
+          this.alertify.error(error.error.message);
         } else {
           // Server Side Error
-          return throwError({
-            status: error.status,
-            message: error.error.message
-          } as AppResponse);
+          this.alertify.error(error.error.message);
         }
       }),
       finalize(() => {
