@@ -5,11 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\commentaryconfig.json" />
     <None Remove="Data\dailypl.json" />
     <None Remove="Data\dailyTrades.json" />
     <None Remove="Data\estimates.json" />
+    <None Remove="Data\groupHierarchyMapping.json" />
     <None Remove="Data\hierarchy.json" />
     <None Remove="Data\portfolio.json" />
+    <None Remove="Data\usergroups.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
@@ -27,6 +30,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Data\commentaryconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Data\dailypl.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -36,10 +42,16 @@
     <Resource Include="Data\estimates.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Data\groupHierarchyMapping.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Data\hierarchy.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Data\portfolio.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\usergroups.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
