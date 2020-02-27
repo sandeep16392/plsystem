@@ -30,6 +30,10 @@ namespace PLSystem.DAL.Data
             builder.Entity<Portfolio>()
                 .HasKey(x => x.PortfolioId);
 
+            builder.Entity<Portfolio>()
+                .Property(et => et.PortfolioId)
+                .ValueGeneratedNever();
+
             builder.Entity<User>()
                 .HasKey(x => x.UserName);
 

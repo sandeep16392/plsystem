@@ -10,8 +10,8 @@ using PLSystem.DAL.Data;
 namespace PLSystem.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200226143155_migration-currency")]
-    partial class migrationcurrency
+    [Migration("20200227191058_finalMigration")]
+    partial class finalMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,9 +156,7 @@ namespace PLSystem.DAL.Migrations
             modelBuilder.Entity("PLSystem.DAL.EntityModels.Portfolio", b =>
                 {
                     b.Property<int>("PortfolioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");

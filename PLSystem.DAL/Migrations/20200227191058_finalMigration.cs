@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PLSystem.DAL.Migrations
 {
-    public partial class userlatestmig : Migration
+    public partial class finalMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,11 +45,18 @@ namespace PLSystem.DAL.Migrations
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastActive = table.Column<DateTime>(nullable: false)
+                    LastActive = table.Column<DateTime>(nullable: false),
+                    UserName1 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserName);
+                    table.ForeignKey(
+                        name: "FK_Users_Users_UserName1",
+                        column: x => x.UserName1,
+                        principalTable: "Users",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,15 +85,15 @@ namespace PLSystem.DAL.Migrations
                 name: "Portfolios",
                 columns: table => new
                 {
-                    PortfolioId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PortfolioId = table.Column<int>(nullable: false),
                     Portfolio_Name = table.Column<string>(nullable: true),
                     Source_System = table.Column<string>(nullable: true),
                     Region = table.Column<string>(nullable: true),
                     Start_Date = table.Column<DateTime>(nullable: false),
                     End_Date = table.Column<DateTime>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
-                    HierarchyId = table.Column<string>(nullable: true)
+                    HierarchyId = table.Column<string>(nullable: true),
+                    Currency = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -157,13 +164,13 @@ namespace PLSystem.DAL.Migrations
                     Daily_PL = table.Column<double>(nullable: false),
                     IsApproved = table.Column<bool>(nullable: false),
                     IsReviewed = table.Column<bool>(nullable: false),
-                    ApprovedBy = table.Column<int>(nullable: false),
                     ApprovedDate = table.Column<DateTime>(nullable: false),
                     LastUpdated = table.Column<DateTime>(nullable: false),
                     Sent_To_FO_Flag = table.Column<bool>(nullable: false),
                     Commentary1 = table.Column<string>(nullable: true),
                     Commentary2 = table.Column<string>(nullable: true),
-                    PortfolioId = table.Column<int>(nullable: false)
+                    PortfolioId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -174,6 +181,12 @@ namespace PLSystem.DAL.Migrations
                         principalTable: "Portfolios",
                         principalColumn: "PortfolioId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DailyPLs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserName",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,6 +219,11 @@ namespace PLSystem.DAL.Migrations
                 column: "PortfolioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DailyPLs_UserId",
+                table: "DailyPLs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DailyTrades_PortfolioId",
                 table: "DailyTrades",
                 column: "PortfolioId");
@@ -224,6 +242,11 @@ namespace PLSystem.DAL.Migrations
                 name: "IX_UserGroupHierarchies_UserGroupId",
                 table: "UserGroupHierarchies",
                 column: "UserGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_UserName1",
+                table: "Users",
+                column: "UserName1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserUserGroups_UserGroupId",

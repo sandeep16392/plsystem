@@ -49,9 +49,7 @@ namespace PLSystem.DAL.Data
                 _context.DailyTrades.AddRange(dailyTrades);
                 _context.UserGroups.AddRange(usergroups);
 
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [PLSystemDb].[dbo].[Portfolios] ON;");
                 _context.SaveChanges();
-                _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [PLSystemDb].[dbo].[Portfolios] OFF;");
 
                 transaction.Commit();
             }

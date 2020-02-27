@@ -154,9 +154,7 @@ namespace PLSystem.DAL.Migrations
             modelBuilder.Entity("PLSystem.DAL.EntityModels.Portfolio", b =>
                 {
                     b.Property<int>("PortfolioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");
