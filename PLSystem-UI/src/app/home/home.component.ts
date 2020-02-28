@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 import { PortfolioView } from '../models/PortfolioView';
 import { PortfolioTrade } from '../models/PortfolioTrade';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AlertifyService } from '../services/alertify.service';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +26,8 @@ export class HomeComponent implements OnInit {
     private plService: PlApprovalService,
     private configService: ConfigurationService,
     public authService: AuthService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private alertify: AlertifyService
   ) {}
 
   ngOnInit() {
@@ -59,6 +61,9 @@ export class HomeComponent implements OnInit {
         this.detailsAvailable = true;
       }
     });
+    if (details.length <= 0) {
+      this.alertify.warning('No data available for selected desk.');
+    }
     this.selectedDeskDetails = details;
   }
 }
