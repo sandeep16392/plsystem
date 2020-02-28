@@ -162,7 +162,7 @@ namespace PLSystem.DAL.Repositories
                         {
                             PortfolioId = dp.PortfolioId,
                             Portfolio_Name = dp.Portfolio.Portfolio_Name,
-                            ApprovalDate = dp.ApprovedDate,
+                            ApprovalDate = dp.ApprovedDate == DateTime.MinValue ? (DateTime?)null : dp.ApprovedDate,
                             ApprovedBy = dp.UserId,
                             BusinessDate = dp.Business_Date,
                             Currency = p.Currency

@@ -8,7 +8,7 @@ namespace PLSystem.DAL.DomainModels
         public string Portfolio_Name { get; set; }
         public DateTime BusinessDate { get; set; }
         public string ApprovedBy { get; set; }
-        public DateTime ApprovalDate { get; set; }
+        public DateTime? ApprovalDate { get; set; }
         public string Currency { get; set; }
     }
 }
