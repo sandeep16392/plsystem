@@ -1,13 +1,15 @@
 import uuid
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status  # noqa
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user_id
 from app.core.exceptions import ForbiddenError, NotFoundError
 from app.database import get_db
+from app.repositories.activity_repo import ActivityRepository
 from app.repositories.group_repo import GroupRepository
 from app.models.group import Group
+from app.services.activity_service import ActivityService
 from app.schemas.group import (
     GroupCreate,
     GroupMemberAdd,
@@ -43,6 +45,7 @@ async def create_group(
     data: GroupCreate,
     user_id: uuid.UUID = Depends(get_current_user_id),
     repo: GroupRepository = Depends(get_group_repo),
+    db: AsyncSession = Depends(get_db),
 ):
     group = Group(
         name=data.name,
@@ -55,6 +58,11 @@ async def create_group(
     )
     group = await repo.create(group)
     await repo.add_member(group.id, user_id, role="admin")
+
+    # Log activity
+    activity_service = ActivityService(ActivityRepository(db))
+    await activity_service.log_group_created(user_id, group.id, data.name)
+
     members = await repo.get_members(group.id)
     gr = GroupResponse.model_validate(group)
     gr.members = [GroupMemberResponse.model_validate(m) for m in members]
@@ -116,6 +124,7 @@ async def add_member(
     data: GroupMemberAdd,
     user_id: uuid.UUID = Depends(get_current_user_id),
     repo: GroupRepository = Depends(get_group_repo),
+    db: AsyncSession = Depends(get_db),
 ):
     if not await repo.is_member(group_id, user_id):
         raise ForbiddenError("Not a member of this group")
@@ -123,6 +132,10 @@ async def add_member(
     if existing:
         raise ForbiddenError("User is already a member")
     member = await repo.add_member(group_id, data.user_id)
+
+    activity_service = ActivityService(ActivityRepository(db))
+    await activity_service.log_member_added(user_id, group_id, data.user_id)
+
     return GroupMemberResponse.model_validate(member)
 
 
@@ -132,7 +145,11 @@ async def remove_member(
     member_user_id: uuid.UUID,
     user_id: uuid.UUID = Depends(get_current_user_id),
     repo: GroupRepository = Depends(get_group_repo),
+    db: AsyncSession = Depends(get_db),
 ):
     if not await repo.is_admin(group_id, user_id) and member_user_id != user_id:
         raise ForbiddenError("Only admins can remove other members")
     await repo.remove_member(group_id, member_user_id)
+
+    activity_service = ActivityService(ActivityRepository(db))
+    await activity_service.log_member_removed(user_id, group_id, member_user_id)

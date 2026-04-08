@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth, users, groups, expenses
+from app.routers import auth, users, groups, expenses, settlements, activities
 
 app = FastAPI(
     title="Splitwise Multi-Currency API",
@@ -22,6 +22,8 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(groups.router)
 app.include_router(expenses.router)
+app.include_router(settlements.router)
+app.include_router(activities.router)
 
 
 @app.get("/api/health")

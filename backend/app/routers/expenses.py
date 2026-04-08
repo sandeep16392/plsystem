@@ -6,9 +6,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.dependencies import get_current_user_id
 from app.core.exceptions import ForbiddenError, NotFoundError
 from app.database import get_db
+from app.repositories.activity_repo import ActivityRepository
 from app.repositories.expense_repo import ExpenseRepository
 from app.repositories.group_repo import GroupRepository
 from app.schemas.expense import ExpenseCreate, ExpenseResponse, ExpenseSplitResponse, ExpenseUpdate
+from app.services.activity_service import ActivityService
 from app.services.expense_service import ExpenseService
 
 router = APIRouter(tags=["expenses"])
@@ -59,6 +61,18 @@ async def create_expense(
     expense_repo = ExpenseRepository(db)
     service = ExpenseService(expense_repo)
     expense = await service.create_expense(group_id, user_id, data, member_ids)
+
+    # Log activity
+    activity_repo = ActivityRepository(db)
+    activity_service = ActivityService(activity_repo)
+    await activity_service.log_expense_created(
+        actor_id=user_id,
+        group_id=group_id,
+        expense_id=expense.id,
+        description=data.description,
+        amount=data.amount,
+        currency=data.currency,
+    )
 
     splits = await expense_repo.get_splits(expense.id)
     er = ExpenseResponse.model_validate(expense)
@@ -141,5 +155,15 @@ async def delete_expense(
     group_repo = GroupRepository(db)
     if not await group_repo.is_member(expense.group_id, user_id):
         raise ForbiddenError("Not a member of this group")
+
+    # Log activity before deletion
+    activity_repo = ActivityRepository(db)
+    activity_service = ActivityService(activity_repo)
+    await activity_service.log_expense_deleted(
+        actor_id=user_id,
+        group_id=expense.group_id,
+        expense_id=expense_id,
+        description=expense.description,
+    )
 
     await expense_repo.delete_by_id(expense_id)
