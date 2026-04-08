@@ -1,49 +1,61 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+import { useAuthStore } from "./stores/authStore";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Groups from "./pages/Groups";
+import CreateGroup from "./pages/CreateGroup";
+import GroupDetail from "./pages/GroupDetail";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
-    },
-  },
-});
+type Page = "login" | "register" | "groups" | "create-group" | "group-detail";
 
 function App() {
+  const { isAuthenticated, user, logout } = useAuthStore();
+  const [page, setPage] = useState<Page>("login");
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+
+  if (!isAuthenticated) {
+    if (page === "register") {
+      return <Register onSwitch={() => setPage("login")} />;
+    }
+    return <Login onSwitch={() => setPage("register")} />;
+  }
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <div className="min-h-screen pb-16">
-          <Routes>
-            <Route path="/" element={<div className="p-4 text-center mt-20"><h1 className="text-2xl font-bold text-primary-600">Splitwise Multi-Currency</h1><p className="text-gray-500 mt-2">Coming soon...</p></div>} />
-          </Routes>
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* App header */}
+      <header className="bg-primary-600 text-white px-4 py-3 flex justify-between items-center">
+        <h1 className="font-bold" data-testid="app-header">SplitWise</h1>
+        <div className="flex items-center gap-3">
+          <span data-testid="current-user" className="text-sm">{user?.display_name}</span>
+          <button data-testid="logout-btn" onClick={() => { logout(); setPage("login"); }} className="text-sm underline">
+            Logout
+          </button>
         </div>
-        {/* Bottom Nav placeholder */}
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 px-4 safe-bottom">
-          <button className="flex flex-col items-center min-h-touch min-w-touch justify-center text-primary-600 text-xs font-medium">
-            <span className="text-lg">&#9776;</span>
-            Groups
-          </button>
-          <button className="flex flex-col items-center min-h-touch min-w-touch justify-center text-gray-400 text-xs">
-            <span className="text-lg">&#9734;</span>
-            Friends
-          </button>
-          <button className="flex flex-col items-center min-h-touch min-w-touch justify-center text-gray-400 text-xs">
-            <span className="text-lg">&#43;</span>
-            Add
-          </button>
-          <button className="flex flex-col items-center min-h-touch min-w-touch justify-center text-gray-400 text-xs">
-            <span className="text-lg">&#128276;</span>
-            Activity
-          </button>
-          <button className="flex flex-col items-center min-h-touch min-w-touch justify-center text-gray-400 text-xs">
-            <span className="text-lg">&#9881;</span>
-            Account
-          </button>
-        </nav>
-      </BrowserRouter>
-    </QueryClientProvider>
+      </header>
+
+      {/* Page content */}
+      {page === "groups" || (page === "login" && isAuthenticated) ? (
+        <Groups
+          onSelect={(id) => { setSelectedGroupId(id); setPage("group-detail"); }}
+          onCreateNew={() => setPage("create-group")}
+        />
+      ) : page === "create-group" ? (
+        <CreateGroup
+          onCreated={() => setPage("groups")}
+          onBack={() => setPage("groups")}
+        />
+      ) : page === "group-detail" && selectedGroupId ? (
+        <GroupDetail
+          groupId={selectedGroupId}
+          onBack={() => setPage("groups")}
+        />
+      ) : (
+        <Groups
+          onSelect={(id) => { setSelectedGroupId(id); setPage("group-detail"); }}
+          onCreateNew={() => setPage("create-group")}
+        />
+      )}
+    </div>
   );
 }
 

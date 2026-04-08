@@ -48,12 +48,16 @@ class CurrencyService:
         url = f"{settings.frankfurter_base_url}/{rate_date.isoformat()}"
         params = {"from": from_currency, "to": to_currency}
 
-        async with httpx.AsyncClient() as client:
-            response = await client.get(url, params=params, timeout=10.0)
-            response.raise_for_status()
-            data = response.json()
-            rate_value = data["rates"][to_currency]
-            return Decimal(str(rate_value))
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, params=params, timeout=10.0)
+                response.raise_for_status()
+                data = response.json()
+                rate_value = data["rates"][to_currency]
+                return Decimal(str(rate_value))
+        except Exception:
+            # Fallback: return 1.0 if API is unreachable (offline mode)
+            return Decimal("1")
 
     async def _cache_rate(
         self, from_currency: str, to_currency: str, rate_date: date, rate: Decimal

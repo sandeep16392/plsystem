@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.exchange_rate import ExchangeRate
@@ -27,6 +27,20 @@ class ExchangeRateRepository(BaseRepository[ExchangeRate]):
     async def save_rate(
         self, base_currency: str, target_currency: str, rate: Decimal, rate_date: date
     ) -> ExchangeRate:
+        # Check if rate already exists first to avoid UNIQUE violations
+        result = await self.db.execute(
+            select(ExchangeRate).where(
+                ExchangeRate.base_currency == base_currency,
+                ExchangeRate.target_currency == target_currency,
+                ExchangeRate.rate_date == rate_date,
+            )
+        )
+        existing = result.scalar_one_or_none()
+        if existing:
+            existing.rate = rate
+            await self.db.flush()
+            return existing
+
         exchange_rate = ExchangeRate(
             base_currency=base_currency,
             target_currency=target_currency,
