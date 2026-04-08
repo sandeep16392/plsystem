@@ -9,6 +9,7 @@ from app.core.dependencies import get_current_user_id
 from app.core.exceptions import ForbiddenError, NotFoundError
 from app.database import get_db
 from app.repositories.activity_repo import ActivityRepository
+from app.repositories.exchange_rate_repo import ExchangeRateRepository
 from app.repositories.expense_repo import ExpenseRepository
 from app.repositories.group_repo import GroupRepository
 from app.schemas.expense import ExpenseResponse, ExpenseSplitResponse
@@ -16,15 +17,18 @@ from app.schemas.group import BalanceEntry, DebtEntry
 from app.schemas.settlement import SettleCreate
 from app.services.activity_service import ActivityService
 from app.services.balance_service import BalanceService
+from app.services.currency_service import CurrencyService
 from app.services.debt_service import DebtService
 from app.models.expense import Expense, ExpenseSplit
 
 router = APIRouter(prefix="/api/groups", tags=["balances & settlements"])
 
 
-async def _dummy_rate(from_c, to_c, d):
-    """Phase 2: same-currency only. Phase 3 will add real rates."""
-    return Decimal("1")
+def _build_currency_service(db: AsyncSession) -> CurrencyService:
+    return CurrencyService(
+        exchange_rate_repo=ExchangeRateRepository(db),
+        redis_client=None,  # No Redis in MVP; DB cache only
+    )
 
 
 @router.get("/{group_id}/balances", response_model=list[BalanceEntry])
@@ -41,10 +45,13 @@ async def get_balances(
     if not group:
         raise NotFoundError("Group not found")
 
+    currency_service = _build_currency_service(db)
+    conversion_date = currency_service.get_conversion_date(group)
+
     expense_repo = ExpenseRepository(db)
     service = BalanceService(expense_repo)
     balances = await service.compute_group_balances(
-        group_id, group.target_currency, _dummy_rate, date.today()
+        group_id, group.target_currency, currency_service.get_rate, conversion_date
     )
 
     return [
@@ -67,10 +74,13 @@ async def get_simplified_debts(
     if not group:
         raise NotFoundError("Group not found")
 
+    currency_service = _build_currency_service(db)
+    conversion_date = currency_service.get_conversion_date(group)
+
     expense_repo = ExpenseRepository(db)
     balance_service = BalanceService(expense_repo)
     balances = await balance_service.compute_group_balances(
-        group_id, group.target_currency, _dummy_rate, date.today()
+        group_id, group.target_currency, currency_service.get_rate, conversion_date
     )
 
     transactions = DebtService.simplify_debts(balances)
@@ -98,11 +108,10 @@ async def settle_up(
     if not await group_repo.is_member(group_id, data.to_user_id):
         raise ForbiddenError("Recipient is not a member of this group")
 
-    # Create a settlement expense: payer=current_user, split=to_user owes full amount
     expense = Expense(
         group_id=group_id,
         paid_by=user_id,
-        description=f"Settlement payment",
+        description="Settlement payment",
         amount=data.amount,
         currency=data.currency,
         split_method="exact",
@@ -117,7 +126,6 @@ async def settle_up(
     expense_repo = ExpenseRepository(db)
     expense = await expense_repo.create_with_splits(expense, [split])
 
-    # Log activity
     activity_repo = ActivityRepository(db)
     activity_service = ActivityService(activity_repo)
     await activity_service.log_settlement(
